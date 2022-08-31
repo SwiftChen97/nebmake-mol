@@ -8,14 +8,10 @@ import sys
 import config
 from src.interp_process import interp
 
-# write lattice constant and the coordinates of lead and iodine.
-def inorganic_part(folder):
-	for image in range(int(sys.argv[3])):
-		# find structure file path and get content
-		file_path = os.path.join(folder, f'interp_{str(image + 1)}.vasp')
-
-		with open(file_path, 'r', encoding = 'utf-8') as file_object:
-			data = file_object.readlines()
+# extract the coordinates of inorganic atoms
+def extract_inorganic(ini_path, fin_path):
+	with open(ini_path, 'r', encoding = 'utf-8') as file_object:
+		data = file_object.readlines()
 		ele = data[5].strip().split()
 		num = [int(k) for k in data[6].strip().split()]
 
@@ -32,8 +28,9 @@ def inorganic_part(folder):
 					or re.search('[A-Z]', coord[seq])
 
 			if not tail:
-				continue
-			coord[seq] = '{}\n'.format(coord[seq].strip(tail.group()))
+				coord[seq] = '{}\n'.format(coord[seq])
+			else:
+				coord[seq] = '{}\n'.format(coord[seq].strip(tail.group()))
 
 		part_pos = []
 		for scop in num:
@@ -49,26 +46,26 @@ def inorganic_part(folder):
 					continue
 				lead_iodine.append(part_pos[seq])
 
-		with open(file_path, 'w', encoding = 'utf-8') as file_obj:
+		with open(fin_path, 'w', encoding = 'utf-8') as file_obj:
 			for info in head:
 				file_obj.write(info)
 
-			for type in lead_iodine:
-				for coor in type:
+			for tp in lead_iodine:
+				for coor in tp:
 					file_obj.write(coor)
 
-def organic_part(wfolder):
+def extract_organic(mol_path='center_neighbor'):
 	list_first = []
 	list_second = []
 	list_third = []
 	for file in range(config.molecule_number):
 		# read every molecule information from molecule file
-		folder = os.path.join(config.base_dir, 'center_neighbor')
+		folder = os.path.join(config.base_dir, mol_path)
 
 		ini_path = os.path.join(folder, f'initial_{str(file)}.dat')
 		fin_path = os.path.join(folder, f'final_{str(file)}.dat')
 
-		first, second, third = interp(ini_path, fin_path)
+		first, second, third, rot = interp(ini_path, fin_path)
 		list_first.append(first)
 		list_second.append(second)
 		list_third.append(third)
@@ -76,19 +73,30 @@ def organic_part(wfolder):
 	list_first = list(map(list, zip(*list_first)))
 	list_second = list(map(list, zip(*list_second)))
 	list_third = list(map(list, zip(*list_third)))
+	return list_first, list_second, list_third, rot
 
+# write lattice constant and the coordinates of lead and iodine.
+def inorganic_part(folder, label='interp'):
+	for image in range(int(sys.argv[3])):
+		# find structure file path and get content
+		file_path = os.path.join(folder, f'{label}_{str(image + 1)}.vasp')
+		extract_inorganic(file_path, file_path)
+		
+
+def organic_part(wfolder,path='center_neighbor', label='interp'):
+	l1, l2, l3, rot = extract_organic(path)
 	# write organic section
 	for image in range(int(sys.argv[3])):
-		file_path = os.path.join(wfolder, f'interp_{str(image + 1)}.vasp')
+		file_path = os.path.join(wfolder, f'{label}_{str(image + 1)}.vasp')
 
 		with open(file_path, 'a', encoding = 'utf-8') as file_object:
-			for j in list_first[image]:
+			for j in l1[image]:
 				for k in range(len(j)):
 					file_object.write('{}\n'.format(j[k]))
-			for j in list_second[image]:
+			for j in l2[image]:
 				for k in range(len(j)):
 					file_object.write('{}\n'.format(j[k]))
-			for j in list_third[image]:
+			for j in l3[image]:
 				for k in range(len(j)):
 					file_object.write('{}\n'.format(j[k]))
 
