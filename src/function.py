@@ -1,7 +1,9 @@
+import sys
 from src.operate import linear_interpolate
 from utils import mv_boundry
 from utils import reset_lattice
 from src.operate import write_molecule, combine_poscar
+from utils import mol_rot
 
 def run():
     # consider the move direction of organic molecule
@@ -12,7 +14,16 @@ def run():
         '4': {'title': "interp organic atoms and combine all atoms together", 'func': combine_poscar.run},
         '5': {'title': "adjust lattice of interpolated structure", 'func': reset_lattice.run},
     }
+    if len(sys.argv) == 6:
+        if sys.argv[5].lower() == 'y':
+            for choice in range(4):
+                choice_dict = func_dict.get(str(choice + 1))
+                choice_dict['func']()
+            mol_rot.rot_mol()
 
-    for choice in range(5):
-        choice_dict = func_dict.get(str(choice + 1))
-        choice_dict['func']()
+        elif sys.argv[5].lower() == 'n':
+            for choice in range(5):
+                choice_dict = func_dict.get(str(choice + 1))
+                choice_dict['func']()
+    else:
+        print('formmat error')

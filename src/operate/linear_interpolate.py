@@ -122,14 +122,14 @@ def get_Q(struct1, struct2):
     return np.sqrt(np.sum(mass*disp**2))
 
 
-def run():
+def run(path1=sys.argv[1], path2=sys.argv[2], end='interp_result', label='interp'):
     # create folder to store the interpolated structures
-    folder_path = os.path.join(config.base_dir, 'interp_result')
+    folder_path = os.path.join(config.base_dir, end)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    q0 = pmg.Structure.from_file(os.path.join(config.base_dir, sys.argv[1]))
-    q1 = pmg.Structure.from_file(os.path.join(config.base_dir, sys.argv[2]))
+    q0 = pmg.Structure.from_file(os.path.join(config.base_dir, path1))
+    q1 = pmg.Structure.from_file(os.path.join(config.base_dir, path2))
     dQ = get_Q(q0,q1)
     print(dQ)
 
@@ -139,5 +139,5 @@ def run():
     interp=interpolate2(q0, q1, ximages = xx, pbc = True, interpolate_lattices = True)
 
     for itr,istr in enumerate(interp):
-        file_path = os.path.join(folder_path, f"interp_{itr + 1}.vasp")
+        file_path = os.path.join(folder_path, f"{label}_{itr + 1}.vasp")
         istr.to(fmt = "poscar",filename = file_path)

@@ -69,6 +69,9 @@ def interp(file_i, file_f):
 	interp_phi = np.linspace(phi_i, phi_f, int(sys.argv[3]))
 	interp_gamma = np.linspace(gamma_i, gamma_f, int(sys.argv[3]))
 
+	theta_rot = theta_i + config.theta
+	phi_rot = phi_i + config.phi
+	gamma_rot = gamma_i + config.gamma
 	#To Do:
 	# 1. interpolate the structure data
 
@@ -77,6 +80,14 @@ def interp(file_i, file_f):
 	third_list = []
 
 	if phi_i > phi_f:
+		coor_rot = coor_recurr(interp_mc[0],
+							theta_rot,
+							phi_rot,
+							gamma_rot,
+							struc_data_i, load_data(file_i)[-1], ref = - np.pi / 2)
+		for a in range(len(coor_rot)):
+			coor_rot[a] = list(np.dot(coor_rot[a], config.imatrix))
+
 		for i in range(len(interp_x)):
 			coor_list = coor_recurr(interp_mc[i], 
 								interp_theta[i], 
@@ -106,6 +117,14 @@ def interp(file_i, file_f):
 			second_list.append(second)
 			third_list.append(third)
 	else:
+		coor_rot = coor_recurr(interp_mc[0],
+							theta_rot,
+							phi_rot,
+							gamma_rot,
+							struc_data_i, load_data(file_i)[-1])
+		for a in range(len(coor_rot)):
+			coor_rot[a] = list(np.dot(coor_rot[a], config.imatrix))
+
 		for i in range(len(interp_x)):
 			coor_list = coor_recurr(interp_mc[i], 
 								interp_theta[i], 
@@ -134,4 +153,4 @@ def interp(file_i, file_f):
 			first_list.append(first)
 			second_list.append(second)
 			third_list.append(third)
-	return first_list, second_list, third_list
+	return first_list, second_list, third_list, list(coor_rot)

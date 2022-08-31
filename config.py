@@ -1,5 +1,6 @@
 import os
 import sys
+import numpy as np
 from src.center import cal_center
 
 organic_info = {'C':12.011, 'N':14.007, 'H':1.008}
@@ -19,6 +20,10 @@ keys = info[5].split()
 name_num = dict(zip(keys, values))
 # basic information of interpolate
 inorganic = ['Pb', 'I']
-organic = ['C', 'N', 'H']
+organic = ['H', 'C', 'N']
 ele_name = f"{'  '.join(inorganic)}  {'  '.join(organic)}\n"
 ele_num = f"{'  '.join([name_num[ele] for ele in ele_name.strip().split()])}\n"
+
+theta = 0.0
+phi = 0.0
+gamma = np.pi
