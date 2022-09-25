@@ -1,1 +1,3 @@
-# This package is used to interpolate the rotations of organic molecules in hybrid materials
+# Nudged Elastic Band structures generation
+## Usage
+### python interp_main.py initial.vasp final.vasp total distance
