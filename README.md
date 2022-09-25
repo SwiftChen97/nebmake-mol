@@ -1,2 +1,1 @@
-1. 注意两个参考原子的选取，应该尽量使得三角形更大，而且统一
-2. 建立的坐标系的方向的选择，对分子向上还是向下转动会有影响
+# This package is used to interpolate the rotations of organic molecules in hybrid materials
