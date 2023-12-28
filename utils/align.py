@@ -164,7 +164,6 @@ def organic():
 
 		ini_para = (ini_center, ini_coord, n_atom)
 		fin_para = (fin_center, fin_coord, n_atom)
-
 		# get initial structure and degree of freedom of the final structure
 		struc_data_i = np.array(dof_quant(*ini_para)[-1])
 		theta_f, phi_f, gamma_f, struc_data_f = dof_quant(*fin_para)

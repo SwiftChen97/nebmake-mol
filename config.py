@@ -3,7 +3,7 @@ import sys
 from src.center import cal_center
 
 organic_info = {'C':12.011, 'N':14.007, 'H':1.008}
-base_dir =  os.getcwd()
+base_dir =  os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 with open(os.path.join(base_dir, sys.argv[1]), 'r', encoding = 'utf-8') as file_object:
     info = file_object.readlines()

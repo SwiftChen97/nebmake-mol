@@ -2,6 +2,8 @@ import os
 import sys
 import numpy as np
 import pymatgen as pmg
+from pymatgen.core.structure import IStructure as struc
+from pymatgen.core.lattice import Lattice
 import config
 
 def interpolate2(start_structure, end_structure, ximages=np.linspace(0,1,11),
@@ -40,7 +42,7 @@ def interpolate2(start_structure, end_structure, ximages=np.linspace(0,1,11),
 
     # Check that both structures have the same species
     for i in range(len(start_structure)):
-        if start_structure[i].species_and_occu != end_structure[i].species_and_occu:
+        if start_structure[i].species != end_structure[i].species:
             raise ValueError("Different species!\nStructure 1:\n" +
                              str(start_structure) + "\nStructure 2\n" +
                              str(end_structure))
@@ -100,7 +102,7 @@ def interpolate2(start_structure, end_structure, ximages=np.linspace(0,1,11),
     for x in ximages:
         if interpolate_lattices:
             l_a = np.dot(np.identity(3) + x* lvec, lstart).T
-            l = pmg.Lattice(l_a)
+            l = Lattice(l_a)
         else:
             l = start_structure.lattice
         fcoords = start_coords + x  * vec
@@ -128,8 +130,8 @@ def run():
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    q0 = pmg.Structure.from_file(os.path.join(config.base_dir, sys.argv[1]))
-    q1 = pmg.Structure.from_file(os.path.join(config.base_dir, sys.argv[2]))
+    q0 = struc.from_file(os.path.join(config.base_dir, sys.argv[1]))
+    q1 = struc.from_file(os.path.join(config.base_dir, sys.argv[2]))
     dQ = get_Q(q0,q1)
     print(dQ)
 

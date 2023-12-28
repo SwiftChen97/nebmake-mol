@@ -28,13 +28,14 @@ def write_text(folder, center_vec, state, seq, name):
     """
     file_path = os.path.join(folder, f'{name}_{str(seq)}.dat')
     
-    with open(file_path, 'w', encoding = 'utf-8') as file_object:
-        center = '%.10f %.10f %.10f\n' %(center_vec[0], center_vec[1], center_vec[2])
-        file_object.write(center)
+    if not os.path.exists(file_path):
+        with open(file_path, 'w', encoding = 'utf-8') as file_object:
+            center = '%.10f %.10f %.10f\n' %(center_vec[0], center_vec[1], center_vec[2])
+            file_object.write(center)
 
-        for line in state[seq][1]:
-            line = '%.10f %.10f %.10f\n' %(line[0], line[1], line[2])
-            file_object.write(line)
+            for line in state[seq][1]:
+                line = '%.10f %.10f %.10f\n' %(line[0], line[1], line[2])
+                file_object.write(line)
 
 def run():
     # create directories to store the files

@@ -25,6 +25,7 @@ def deg_calcu(vector_c, vector_e1, vector_e2):
 	return gamma
 
 def dof_quant(mass_center, coor_data, n_atom, ref = np.pi / 2):
+	print(coor_data)
 	vector_a = coor_data[config.min_a + 1] - mass_center
 	vector_b = coor_data[config.max_a - 1] - mass_center
 	r1, theta, phi = cartesian_spherical_converter(vector_a, 'spherical')
