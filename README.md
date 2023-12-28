@@ -8,3 +8,7 @@ You can set interpolating how many strcutres behind `final.vasp` and the distanc
 ## Environment
 
 pymatgen    2023.8.10
+
+pip install -r requirements-pip.txt
+
+conda install --yes --file requirements-conda.txt
